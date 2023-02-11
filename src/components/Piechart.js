@@ -57,7 +57,8 @@ const Piechart = () => {
       ];
           
     return <div className='Piechart'>
-        <PieChart style={{ display: "flex", alignItems: "center"}} width={900} height={800} >
+        <PieChart style={{ display: "flex", alignItems: "center", justifyContent: 'center',
+ flexDirection: 'column',}} width={900} height={800} >
     <Pie data={data01} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={300} fill="#8884d8" />
     <Pie data={data02} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={200} outerRadius={300} fill="#82ca9d" label />
   </PieChart>
