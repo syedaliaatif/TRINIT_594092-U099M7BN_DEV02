@@ -15,8 +15,6 @@
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
     -->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <link rel="stylesheet" href="./../src/index.css"/>
-   
     <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
@@ -41,8 +39,29 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
-    <script>
-      
-    </script>
   </body>
+  <script>
+   
+
+    // Listen to network requests and responses using the browser's Network API
+    const network = performance.getEntriesByType("resource");
+    
+    
+    /*network.forEach((request) => {
+      if (request.name.includes("google.com")) {
+        dataTransferred += request.transferSize * 0.81 * 0.75;
+        
+      }
+    });*/
+    
+    fetch(window.location.protocol + '//' + window.location.host)
+      .then(response => response.text())
+      .then(text => {
+        //dataTransferred = (text.length/1073741824) * 0.81 * 0.75;
+        console.log("Data transfer size:", text.length/1073741824 , "bytes");
+        console.log("carbon emissions:", (text.length/1073741824) * 0.81 * 0.75 * 442, "g");
+    
+      });
+    
+    </script>
 </html>
