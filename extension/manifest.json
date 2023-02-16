@@ -1,0 +1,32 @@
+{
+    "name": "Go Green Chrome Extension",
+    "version": "1.0.0",
+    "manifest_version": 3,
+    "content_scripts": [
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "js": [
+          "content.js"
+        ],
+        "run_at":"document_start"
+        
+      }
+    ],
+    "action": {
+      "default_title": "Go Green",
+      
+      "default_icons": {
+          "16": "cake_design.png",
+          "48":"cake_design.png",
+          "128":"cake_design.png"
+      }
+    },
+    "background": {
+      "service_worker": "background.js"
+    },
+    "permissions":["tabs","storage","scripting",
+    "identity", "identity.email"],
+    "host_permissions":["<all_urls>","http://localhost:3001/*"]
+    }
