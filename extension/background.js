@@ -31,41 +31,6 @@ function PerformanceFunctionToBeInjected() {
     chrome.runtime.sendMessage({ message: 'emmission-calculated', emmission: totalCarbonemissions });
 }
 
-function ShowFrontendFunctionToBeInjected() {
-    console.log('Frontend Func Injected');
-    const state = false;
-    function ShowExtensionFrontend(url, emmission) {
-        try {
-            let e = document.createElement('div');
-            e.id = 'myRoot';
-            e.innerHTML = `This website is ${url} has ${emmission} `;
-            let s = document.createElement('style');
-            s.innerHTML = `#myRoot{
-                position:fixed;
-                left:0;
-                top:0;
-                z-index:2147483647 !important;
-                height:100vh;
-                width:30%;
-                background-color:blue;
-                color:white;
-            }`
-            document.head.appendChild(s);
-            document.body.appendChild(e);
-        } catch (error) {
-            console.log(error);
-        }
-    }
-    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-        if (message.message === 'show-extension-frontend') {
-            ShowExtensionFrontend(message.url, message.emmission);
-            console.log(message);
-        }
-        return true;
-
-    });
-}
-
 async function sendPostRequest(emmission, url, numRetries) {
     try {
         const res = await fetch('http://localhost:3001/api', {
@@ -90,6 +55,9 @@ async function sendPostRequest(emmission, url, numRetries) {
     }
     return;
 }
+function getTabId(tabId) {
+    return JSON.stringify(tabId);
+}
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.message === 'emmission-calculated') {
         const url = new URL(sender.tab.url);
@@ -110,12 +78,23 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             const newEmmission = previousEmmission + Number(message.emmission);
             console.log(`New emmission is ${newEmmission}`)
             chrome.storage.session.set({ [url.host]: newEmmission });
+            sendResponse('Emmission Calculation Done')
         }
         getPreviousEmmission();
 
+
     }
-    else if (message === 'hello') {
-        console.log("Working");
+
+    else if (message.message === 'change-tab-status') {
+
+        (async () => {
+            const tabStatus = await chrome.storage.session.get(JSON.stringify(sender.tab.id));
+            console.log(`Previous tab status: ${tabStatus}`);
+            chrome.storage.session.set({ [getTabId(sender.tab.id)]: 3 - tabStatus[getTabId(sender.tab.id)] });
+            console.log(`New Tab Status : ${3 - tabStatus[getTabId(sender.tab.id)]}`);
+
+        })();
+        sendResponse('Changed tab status')
     }
 
 })
@@ -125,31 +104,72 @@ chrome.tabs.onUpdated.addListener((tabId, changeMessage, tab) => {
             {
                 target: { tabId: tabId },
                 func: PerformanceFunctionToBeInjected
-            }
-        )
-    }
-});
-chrome.action.onClicked.addListener((tab) => {
-
-    console.log("clicked");
-    if (true) {
-        chrome.scripting.executeScript({
-            target: { tabId: tab.id },
-            func: ShowFrontendFunctionToBeInjected
-        });
+            });
         (async () => {
-            const host = getHostName(tab.url);
-            const ge = await chrome.storage.session.get(host);
-            let emmission = ge[host];
-            if (emmission === undefined) emmission = 0;
-            chrome.tabs.sendMessage(tab.id, {
-                message: 'show-extension-frontend',
-                url: getHostName(tab.url),
-                emmission: Number(emmission)
-            })
+            chrome.storage.session.remove(getTabId(tab.id));
+
+
         })();
 
     }
+});
+
+
+
+
+chrome.action.onClicked.addListener((tab) => {
+
+    console.log("clicked");
+    let isGoGreenInjected = false;
+    (async () => {
+
+        const injectedStatus = await chrome.storage.session.get([JSON.stringify(tab.id)]);
+        if (injectedStatus[JSON.stringify(tab.id)] === undefined) isGoGreenInjected = false;
+        else isGoGreenInjected = true;
+
+    })().then(() => {
+        if (isGoGreenInjected === true) {
+            console.log(`Already Injected for this tab`);
+            return;
+        }
+        chrome.storage.session.set({ [getTabId(tab.id)]: 1 });
+        chrome.scripting.executeScript({
+            target: { tabId: tab.id },
+            files: ['popup.js']
+        });
+
+    }).then(() => {
+        (async () => {
+
+            let tabStatus = await chrome.storage.session.get(getTabId(tab.id));
+            if (tabStatus[getTabId(tab.id)] === 1) {
+                const host = getHostName(tab.url);
+                const ge = await chrome.storage.session.get(host);
+                let emmission = ge[host];
+                if (emmission === undefined) emmission = 0;
+                const response = await chrome.tabs.sendMessage(tab.id, {
+                    message: 'show-extension-frontend',
+                    url: getHostName(tab.url),
+                    emmission: Number(emmission)
+                })
+
+
+                const tabStatus = await chrome.storage.session.get(JSON.stringify(tab.id));
+                console.log(`Previous tab status: ${tabStatus}`);
+                chrome.storage.session.set({ [getTabId(tab.id)]: 3 - tabStatus[getTabId(tab.id)] });
+                console.log(`New Tab Status : ${3 - tabStatus[getTabId(tab.id)]}`);
+
+
+
+            }
+
+        })()
+
+    })
+
+
+
+
 
 });
 

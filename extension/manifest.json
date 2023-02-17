@@ -8,7 +8,12 @@
           "<all_urls>"
         ],
         "js": [
-          "content.js"
+          "content.js",
+          "bootstrap/bootstrap.bundle.min.js"
+        ],
+        "css":[
+          "bootstrap/bootstrap.min.css",
+          "css/popup.css"
         ],
         "run_at":"document_start"
         
@@ -16,7 +21,6 @@
     ],
     "action": {
       "default_title": "Go Green",
-      
       "default_icons": {
           "16": "cake_design.png",
           "48":"cake_design.png",
