@@ -5,7 +5,7 @@
     "content_scripts": [
       {
         "matches": [
-          "<all_urls>"
+          "https://*/*"
         ],
         "js": [
           "content.js",
@@ -20,12 +20,7 @@
       }
     ],
     "action": {
-      "default_title": "Go Green",
-      "default_icons": {
-          "16": "cake_design.png",
-          "48":"cake_design.png",
-          "128":"cake_design.png"
-      }
+      "default_title": "Go Green"
     },
     "background": {
       "service_worker": "background.js"

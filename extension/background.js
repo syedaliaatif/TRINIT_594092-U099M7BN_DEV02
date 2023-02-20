@@ -3,33 +3,40 @@ function getHostName(url) {
     return newURL.host;
 }
 
-function PerformanceFunctionToBeInjected() {
-    const entriess = performance.getEntries();
-    let totalTransferSize = 0;
+async function getHostData(url, args, callBackFun) {
+    url = new URL(url);
+    const host = url.host;
+    const dataAttr = ['hits', 'total'];
+    let data = {};
+    dataAttr.forEach(async (attr) => {
 
-    for (const entry of entriess) {
-        if (entry.transferSize > 0) {
-            totalTransferSize += entry.transferSize;
-        }
-    }
-
-    console.log(`Total transfer size: ${totalTransferSize} bytes`);
-
-    const entries = performance.getEntriesByType("resource");
-    let totalResourcesSize = 0;
-
-    for (const entry of entries) {
-        if (entry.encodedBodySize > 0) {
-            totalResourcesSize += (entry.transferSize + entry.decodedBodySize);
-        }
-    }
-
-    console.log(`Total resources size: ${totalResourcesSize} bytes`);
-    let totalCarbonemissions = ((totalResourcesSize + totalTransferSize) * 0.81 * 0.75 * 442) / 1000000000;
-    console.log(`Total carbon emissions per visit : ${totalCarbonemissions} grams`);
-
-    chrome.runtime.sendMessage({ message: 'emmission-calculated', emmission: totalCarbonemissions });
+        const response = await chrome.storage.session.get([host + '/' + attr]);
+        console.log(`Response for ${attr} `, response);
+        if (response[host + '/' + attr] === undefined) data[attr] = 0;
+        else data[attr] = response[host + '/' + attr];
+    });
+    console.log(`Data : `, data);
+    callBackFun(data, args);
 }
+
+async function updateHostData(url, curData) {
+    console.log(`curData: `, curData);
+    getHostData(url, { url: url, curData: curData }, (data, { url, curData }) => {
+        url = new URL(url);
+        const host = url.host;
+        const dataAttr = ['hits', 'total'];
+        console.log(data);
+        console.log(`curData in Callback Function: `, curData)
+
+        dataAttr.forEach((attr) => {
+            const val = Number(curData[attr] + data[attr]);
+            console.log(`Value corres`)
+            chrome.storage.session.set({ [host + '/' + attr]: val });
+        });
+    });
+
+}
+
 
 async function sendPostRequest(emmission, url, numRetries) {
     try {
@@ -58,58 +65,40 @@ async function sendPostRequest(emmission, url, numRetries) {
 function getTabId(tabId) {
     return JSON.stringify(tabId);
 }
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message.message === 'emmission-calculated') {
-        const url = new URL(sender.tab.url);
-        console.log(url.host);
-        console.log(`Emmission value calculated in ${sender.tab.id} to be ${message.emmission}`);
-        console.log(`URL for the website is ${url.host}`);
-        sendPostRequest(message.emmission, url.host, 3);
-
-        async function getPreviousEmmission() {
-            const ge = await chrome.storage.session.get(url.host);
-            let value = await ge[url.host];
-            console.log(`Value: ${value}`);
-            if (value === undefined) value = 0;
-
-            const previousEmmission = Number(value);
-            console.log(`previous emmission is ${previousEmmission}`);
-            console.log(`Current Emmision is ${message.emmission}`);
-            const newEmmission = previousEmmission + Number(message.emmission);
-            console.log(`New emmission is ${newEmmission}`)
-            chrome.storage.session.set({ [url.host]: newEmmission });
-            sendResponse('Emmission Calculation Done')
-        }
-        getPreviousEmmission();
-
-
-    }
-
-    else if (message.message === 'change-tab-status') {
-
-        (async () => {
-            const tabStatus = await chrome.storage.session.get(JSON.stringify(sender.tab.id));
-            console.log(`Previous tab status: ${tabStatus}`);
-            chrome.storage.session.set({ [getTabId(sender.tab.id)]: 3 - tabStatus[getTabId(sender.tab.id)] });
-            console.log(`New Tab Status : ${3 - tabStatus[getTabId(sender.tab.id)]}`);
-
-        })();
-        sendResponse('Changed tab status')
-    }
-
-})
+function testUrl(url) {
+    var regEx = /https:\/\/(.*)/;
+    return regEx.test(url);
+}
 chrome.tabs.onUpdated.addListener((tabId, changeMessage, tab) => {
-    if (tab.url !== undefined && changeMessage.status === "complete") {
-        chrome.scripting.executeScript(
-            {
-                target: { tabId: tabId },
-                func: PerformanceFunctionToBeInjected
-            });
-        (async () => {
-            chrome.storage.session.remove(getTabId(tab.id));
+    if (tab.url !== undefined && changeMessage.status === "complete" && testUrl(tab.url)) {
+
+        chrome.tabs.sendMessage(tabId, {
+            message: 'get-emmission'
+        }).then(async (response) => {
+            const url = new URL(tab.url);
+            console.log(url.host);
+            console.log(`Emmission value calculated in ${tab.id} to be ${response.emmission}`);
+            console.log(`URL for the website is ${url.host}`);
+            sendPostRequest(response.emmission, url.host, 3);
+            const curData = { total: response.emmission, hits: 1 };
+            const data = {};
+            const dataAttrs = ['total', 'hits'];
+            for (let attr of dataAttrs) {
+                const response = await chrome.storage.session.get([url.host + '/' + attr]);
+                if (response[url.host + '/' + attr]) data[attr] = response[url.host + '/' + attr];
+                else data[attr] = 0;
+            }
+            console.log(`Data: `, data);
+            console.log(`curData: `, curData);
+            for (let attr of dataAttrs) {
+                const val = data[attr] + curData[attr];
+                console.log(`Final value for ${attr}: ${val}`)
+                chrome.storage.session.set({ [url.host + '/' + attr]: val });
+            }
 
 
-        })();
+
+        });
 
     }
 });
@@ -120,56 +109,46 @@ chrome.tabs.onUpdated.addListener((tabId, changeMessage, tab) => {
 chrome.action.onClicked.addListener((tab) => {
 
     console.log("clicked");
-    let isGoGreenInjected = false;
-    (async () => {
 
-        const injectedStatus = await chrome.storage.session.get([JSON.stringify(tab.id)]);
-        if (injectedStatus[JSON.stringify(tab.id)] === undefined) isGoGreenInjected = false;
-        else isGoGreenInjected = true;
 
-    })().then(() => {
-        if (isGoGreenInjected === true) {
-            console.log(`Already Injected for this tab`);
-            return;
-        }
-        chrome.storage.session.set({ [getTabId(tab.id)]: 1 });
-        chrome.scripting.executeScript({
-            target: { tabId: tab.id },
-            files: ['popup.js']
-        });
-
-    }).then(() => {
-        (async () => {
-
-            let tabStatus = await chrome.storage.session.get(getTabId(tab.id));
-            if (tabStatus[getTabId(tab.id)] === 1) {
-                const host = getHostName(tab.url);
-                const ge = await chrome.storage.session.get(host);
-                let emmission = ge[host];
-                if (emmission === undefined) emmission = 0;
-                const response = await chrome.tabs.sendMessage(tab.id, {
+    if (tab.url && testUrl(tab.url)) {
+        chrome.tabs.sendMessage(tab.id, { message: 'get-tab-status' }, async (response) => {
+            console.log(`Tab Status for tab ${tab.id}: ${response}`);
+            if (response === false) {
+                let hostData = {};
+                const dataAttrs = ['hits', 'total'];
+                const url = new URL(tab.url);
+                for (let attr of dataAttrs) {
+                    const response = await chrome.storage.session.get([url.host + '/' + attr]);
+                    if (response[url.host + '/' + attr]) hostData[attr] = response[url.host + '/' + attr];
+                    else hostData[attr] = 0;
+                }
+                chrome.tabs.sendMessage(tab.id, {
                     message: 'show-extension-frontend',
-                    url: getHostName(tab.url),
-                    emmission: Number(emmission)
+                    totalEmmission: hostData['total'],
+                    averageEmmission: hostData['total'] / hostData['hits'],
+                    totalHits: hostData['hits'],
+                    host: url.host
                 })
-
-
-                const tabStatus = await chrome.storage.session.get(JSON.stringify(tab.id));
-                console.log(`Previous tab status: ${tabStatus}`);
-                chrome.storage.session.set({ [getTabId(tab.id)]: 3 - tabStatus[getTabId(tab.id)] });
-                console.log(`New Tab Status : ${3 - tabStatus[getTabId(tab.id)]}`);
-
-
+                // getHostData(tab.url, { tab: tab, host: new URL(tab.url) }, (hostData, { tab, host }) => {
+                //     chrome.tabs.sendMessage(tab.id, {
+                //         message: 'show-extension-frontend',
+                //         totalEmmission: hostData['total'],
+                //         averageEmmission: Number(hostData['total'] / hostData['hits']),
+                //         totalHits: hostData['hits'],
+                //         host: host.host
+                //     }).then(() => {
+                //         console.log("extension frontend is being shown for " + `${tab.id}`);
+                //     });
+                // });
 
             }
 
-        })()
-
-    })
-
-
-
-
+            else {
+                console.log(`Frontend was already being shown so no need to show it again for tab ${tab.id}`);
+            }
+        });
+    }
 
 });
 
