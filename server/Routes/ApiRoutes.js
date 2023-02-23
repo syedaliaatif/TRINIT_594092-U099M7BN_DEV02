@@ -1,9 +1,10 @@
-const Router = require('express').Router();
+const { updateUserData, getWebsitesData, getUserData, getSearchResult } = require('../Controllers/controllers');
+const User = require('../Model/UserModel');
 
-Router.post('/', (req, res, next) => {
-    console.log(req.body);
-    console.log("Request Received");
-    res.send("Request received");
-})
+const Router = require('express').Router();
+Router.get('/', getUserData);
+Router.post('/', updateUserData);
+Router.get('/websites', getWebsitesData);
+Router.get('/search', getSearchResult);
 
 module.exports = Router; 

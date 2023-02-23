@@ -38,13 +38,14 @@ async function updateHostData(url, curData) {
 }
 
 
-async function sendPostRequest(emmission, url, numRetries) {
+async function sendPostRequest(emmission, url, email, numRetries) {
     try {
         const res = await fetch('http://localhost:3001/api', {
             method: 'POST',
             body: JSON.stringify({
                 emmission: emmission,
-                url: url
+                host: url,
+                userEmail: email
 
             }),
             headers: {
@@ -58,7 +59,7 @@ async function sendPostRequest(emmission, url, numRetries) {
             console.log(error);
             return;
         }
-        sendPostRequest(emmission, url, numRetries - 1);
+        sendPostRequest(emmission, url, email, numRetries - 1);
     }
     return;
 }
@@ -71,30 +72,34 @@ function testUrl(url) {
 }
 chrome.tabs.onUpdated.addListener((tabId, changeMessage, tab) => {
     if (tab.url !== undefined && changeMessage.status === "complete" && testUrl(tab.url)) {
+        chrome.identity.getProfileUserInfo().then((info) => {
+            console.log(`User email is ${info.email}`);
+            chrome.tabs.sendMessage(tabId, {
+                message: 'get-emmission'
+            }).then(async (response) => {
+                const url = new URL(tab.url);
+                console.log(url.host);
+                console.log(`Emmission value calculated in ${tab.id} to be ${response.emmission}`);
+                console.log(`URL for the website is ${url.host}`);
+                sendPostRequest(response.emmission, url.host, info.email, 3);
+                const curData = { total: response.emmission, hits: 1 };
+                const data = {};
+                const dataAttrs = ['total', 'hits'];
+                for (let attr of dataAttrs) {
+                    const response = await chrome.storage.session.get([url.host + '/' + attr]);
+                    if (response[url.host + '/' + attr]) data[attr] = response[url.host + '/' + attr];
+                    else data[attr] = 0;
+                }
+                console.log(`Data: `, data);
+                console.log(`curData: `, curData);
+                for (let attr of dataAttrs) {
+                    const val = data[attr] + curData[attr];
+                    console.log(`Final value for ${attr}: ${val}`)
+                    chrome.storage.session.set({ [url.host + '/' + attr]: val });
+                }
 
-        chrome.tabs.sendMessage(tabId, {
-            message: 'get-emmission'
-        }).then(async (response) => {
-            const url = new URL(tab.url);
-            console.log(url.host);
-            console.log(`Emmission value calculated in ${tab.id} to be ${response.emmission}`);
-            console.log(`URL for the website is ${url.host}`);
-            sendPostRequest(response.emmission, url.host, 3);
-            const curData = { total: response.emmission, hits: 1 };
-            const data = {};
-            const dataAttrs = ['total', 'hits'];
-            for (let attr of dataAttrs) {
-                const response = await chrome.storage.session.get([url.host + '/' + attr]);
-                if (response[url.host + '/' + attr]) data[attr] = response[url.host + '/' + attr];
-                else data[attr] = 0;
-            }
-            console.log(`Data: `, data);
-            console.log(`curData: `, curData);
-            for (let attr of dataAttrs) {
-                const val = data[attr] + curData[attr];
-                console.log(`Final value for ${attr}: ${val}`)
-                chrome.storage.session.set({ [url.host + '/' + attr]: val });
-            }
+            })
+
 
 
 
@@ -130,17 +135,6 @@ chrome.action.onClicked.addListener((tab) => {
                     totalHits: hostData['hits'],
                     host: url.host
                 })
-                // getHostData(tab.url, { tab: tab, host: new URL(tab.url) }, (hostData, { tab, host }) => {
-                //     chrome.tabs.sendMessage(tab.id, {
-                //         message: 'show-extension-frontend',
-                //         totalEmmission: hostData['total'],
-                //         averageEmmission: Number(hostData['total'] / hostData['hits']),
-                //         totalHits: hostData['hits'],
-                //         host: host.host
-                //     }).then(() => {
-                //         console.log("extension frontend is being shown for " + `${tab.id}`);
-                //     });
-                // });
 
             }
 
