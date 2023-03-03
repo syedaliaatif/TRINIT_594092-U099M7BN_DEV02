@@ -182,7 +182,7 @@ const getWebsitesData = async (req, res, next) => {
                     averageEmmission: 1
                 }
             }
-        ]);
+        ])
         console.log(websiteData);
         console.log(websiteData[0].totalEmmission);
         res.status(200).json(websiteData);
@@ -193,4 +193,44 @@ const getWebsitesData = async (req, res, next) => {
     }
 }
 
-module.exports = { updateUserData, getWebsitesData, getUserData, getSearchResult }; 
+const queryWebsiteData = async (req, res, next) => {
+
+    try {
+        const host = req.body.host;
+        const result = await User.aggregate([
+            {
+                $match: { host: new RegExp(`.*${host}.*`) }
+            },
+            {
+                $group: {
+                    _id: "$host",
+                    totalEmmission: { $sum: "$emmission" },
+                    totalHits: { $sum: "$hits" },
+                }
+            },
+            {
+                $project: {
+                    host: "$_id",
+                    totalEmmission: 1,
+                    totalHits: 1,
+                    averageEmmission: { $divide: ["$totalEmmission", "$totalHits"] }
+                }
+
+            },
+            {
+                $sort: { averageEmmission: 1, host: 1 }
+            },
+            {
+                $limit: 10
+            }
+
+        ]);
+
+        console.log(result);
+        res.json(result);
+    } catch (error) {
+        next(error);
+    }
+}
+
+module.exports = { updateUserData, getWebsitesData, getUserData, getSearchResult, queryWebsiteData }; 
