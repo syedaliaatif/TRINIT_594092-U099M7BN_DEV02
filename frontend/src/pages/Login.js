@@ -1,5 +1,5 @@
 import React from 'react';
-import {MDBContainer, MDBCol, MDBRow, MDBBtn, MDBIcon, MDBInput, MDBCheckbox } from 'mdb-react-ui-kit';
+import { MDBContainer, MDBCol, MDBRow, MDBBtn, MDBIcon, MDBInput, MDBCheckbox } from 'mdb-react-ui-kit';
 import "../App.css";
 
 function Login() {
@@ -23,11 +23,11 @@ function Login() {
               <MDBIcon fab icon='facebook-f' />
             </MDBBtn>
 
-            <MDBBtn floating size='md' tag='a'  className='me-2'>
+            <MDBBtn floating size='md' tag='a' className='me-2'>
               <MDBIcon fab icon='twitter' />
             </MDBBtn>
 
-            <MDBBtn floating size='md' tag='a'  className='me-2'>
+            <MDBBtn floating size='md' tag='a' className='me-2'>
               <MDBIcon fab icon='linkedin-in' />
             </MDBBtn>
 
@@ -37,8 +37,8 @@ function Login() {
             <p className="text-center fw-bold mx-3 mb-0">Or</p>
           </div>
 
-          <MDBInput wrapperClass='mb-4' label='Email address' id='formControlLg' type='email' size="lg"/>
-          <MDBInput wrapperClass='mb-4' label='Password' id='formControlLg' type='password' size="lg"/>
+          <MDBInput wrapperClass='mb-4' label='Email address' id='formControlLg' type='email' size="lg" />
+          <MDBInput wrapperClass='mb-4' label='Password' id='formControlLg' type='password' size="lg" />
 
           <div className="d-flex justify-content-between mb-4">
             <MDBCheckbox name='flexCheck' value='' id='flexCheckDefault' label='Remember me' />
@@ -63,19 +63,19 @@ function Login() {
         <div>
 
           <MDBBtn tag='a' color='none' className='mx-3' style={{ color: 'white' }}>
-            <MDBIcon fab icon='facebook-f' size="md"/>
+            <MDBIcon fab icon='facebook-f' size="md" />
           </MDBBtn>
 
-          <MDBBtn tag='a' color='none' className='mx-3' style={{ color: 'white'  }}>
-            <MDBIcon fab icon='twitter' size="md"/>
+          <MDBBtn tag='a' color='none' className='mx-3' style={{ color: 'white' }}>
+            <MDBIcon fab icon='twitter' size="md" />
           </MDBBtn>
 
-          <MDBBtn tag='a' color='none' className='mx-3' style={{ color: 'white'  }}>
-            <MDBIcon fab icon='google' size="md"/>
+          <MDBBtn tag='a' color='none' className='mx-3' style={{ color: 'white' }}>
+            <MDBIcon fab icon='google' size="md" />
           </MDBBtn>
 
-          <MDBBtn tag='a' color='none' className='mx-3' style={{ color: 'white'  }}>
-            <MDBIcon fab icon='linkedin-in' size="md"/>
+          <MDBBtn tag='a' color='none' className='mx-3' style={{ color: 'white' }}>
+            <MDBIcon fab icon='linkedin-in' size="md" />
           </MDBBtn>
 
         </div>

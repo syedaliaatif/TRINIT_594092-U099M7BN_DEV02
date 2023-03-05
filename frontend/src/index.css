@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 html {
 
   min-height: 100%;
@@ -27,3 +28,34 @@ html {
   
   }
   
+=======
+html {
+
+  min-height: 100%;
+  
+  position: relative;
+  
+  }
+  
+  
+  
+  
+  #root {
+  
+  
+  padding-bottom: 170px; 
+  
+  }
+  
+  footer {
+  
+  position: absolute;
+  
+  bottom: 0;
+  
+  width: 100%;
+  height:170px;
+  
+  }
+  
+>>>>>>> 48a0671e23921b69ac4d74f0f571313769951a48

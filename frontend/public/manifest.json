@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "short_name": "React App",
   "name": "Create React App Sample",
@@ -20,3 +21,27 @@
   "theme_color": "#000000",
   "background_color": "#ffffff"
 }
+=======
+{
+  "short_name": "React App",
+  "name": "Create React App Sample",
+  "description": "www.",
+  "version":"1.0",
+  "manifest_version":3,
+  "acttion":{
+    "default_title": "Extention app",
+    "default_popup":"index.html",
+    "default_icon" : {
+      "16": "logo192.png",
+      "128": "logo192.png"
+
+    }
+  },
+ 
+  
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
+>>>>>>> 48a0671e23921b69ac4d74f0f571313769951a48
