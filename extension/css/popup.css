@@ -1,4 +1,4 @@
-#aatifRoot{
+ /* #aatifRoot{
     position: fixed !important;;
     left: 0 !important;
     top:0 !important;
@@ -7,5 +7,111 @@
     width:20% !important;
     background-color:white!important;
     color:black !important;
-    box-shadow:3px 1px 10px rgba(0,0,0,0.2) !important; 
-}
+    box-shadow:3px 1px 10px rgba(0,0,0,0.2) !important;
+    padding:0 !important;  
+}  */
+
+.aatif-chrome-extension {
+     position: fixed !important;
+    left: 0 !important;
+    top: 0 !important;
+    z-index: 2147483647 !important;
+    height: 100vh !important;
+    width: 250px !important;
+    background-color: white !important;
+    color: black !important;
+    box-shadow: 3px 1px 10px rgba(0, 0, 0, 0.2) !important;
+    
+  }
+  .aatif-chrome-extension .navbar ul {
+
+    width: 100%;
+    list-style-type: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden;
+    background-color: #343a40 !important;
+    color: green !important;
+    line-height: 4em !important;
+  }
+  
+  .aatif-chrome-extension .navbar li {
+    float: left !important;
+    font-size: 2em !important;
+    text-shadow: 0.5px -0.5px 0.15px #fff !important;
+    font-weight: bold !important;
+  }
+  
+  .aatif-chrome-extension a {
+    color: #28a745 !important;
+    text-decoration: none !important;
+  }
+  /* Change the link color to #111 (black) on hover */
+  
+  .aatif-chrome-extension button {
+    display: inline;
+    position: relative !important;
+    cursor: pointer !important;
+    right: 0 !important;
+    top: 5px !important;
+    height: 50px !important;
+    width: 50px !important;
+    background-color: #dc3545 !important;
+    border-radius: 3.5em !important;
+    border: none !important;
+    outline: none !important;
+    color: #f8f9fa !important;
+    margin-left:30px; 
+    /* box-shadow: 0.25px 0 3px rgba(255, 255, 255, 0.5);*/
+  }
+  .aatif-chrome-extension button:hover {
+    box-shadow: 0.25px 0 3px rgba(255, 255, 255, 1) !important;
+  }
+  .aatif-chrome-extension .svg{
+    margin:auto; 
+  }
+  
+  .aatif-chrome-extension .bg-success {
+    background-color: #28a745 !important;
+    border: solid #28a745 !important;
+  }
+  .aatif-chrome-extension .bg-danger {
+    background-color: #dc3545 !important;
+    border: solid #dc3545 !important;
+  }
+  .aatif-chrome-extension .card {
+    position: relative;
+    min-height: 250px !important;
+    width: 230px !important;
+    align-items: center !important;
+    margin: auto !important;
+    margin-top: 20px !important;
+    border-radius: 20px !important;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5) !important;
+    padding-bottom:10px !important; 
+  }
+  
+  .aatif-chrome-extension .card:hover {
+    cursor: pointer !important;
+    box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.8) !important;
+  }
+  .aatif-chrome-extension .card-header {
+    text-align: center !important;
+    line-height: 2em !important;
+    font-size: 1.5em !important;
+  
+    border-top-left-radius: 20px !important;
+    border-top-right-radius: 20px !important;
+    color: white !important;
+    word-wrap: break-word !important;
+    overflow: auto !important;
+  }
+  .aatif-chrome-extension .card-body ul {
+    list-style-type: none !important;
+    background-color: white !important;
+    margin: 0 !important;
+    padding-left: 5px !important;
+    line-height: 4em !important;
+  }
+  
+  
