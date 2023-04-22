@@ -1,37 +1,48 @@
-import { Navbar, Nav, Container, NavDropdown } from "react-bootstrap";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { Navbar, Nav, Container, NavDropdown, Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import AuthService from "../services/auth.service";
 
 
-const HeaderComponent = () => {
+const HeaderComponent = ({ user, setUser }) => {
+
+
+  const handleClick = async () => {
+    const data = await AuthService.logOutService();
+    localStorage.removeItem("user");
+    setUser(null);
+    window.location.reload();
+  }
+
   return (
+
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-      <Container>
+      <Container >
         <Navbar.Brand href="/" size="1000px"><span className="text-success fw-bold h2">Go Green</span></Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link href="#features">Features</Nav.Link>
-            <Nav.Link href="#pricing">Pricing</Nav.Link>
-            <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
-              <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.2">
-                Another action
-              </NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item href="#action/3.4">
-                Separated link
-              </NavDropdown.Item>
-            </NavDropdown>
+            <Nav.Link href="/website/dashboard">Website</Nav.Link>
+            <Nav.Link href="/user/dashboard">User</Nav.Link>
+
           </Nav>
           <Nav>
-            <Nav.Link href="login">Login</Nav.Link>
-            <Nav.Link eventKey={2} href="#memes">
-              Dank memes
-            </Nav.Link>
+            {user ? <>
+              <Nav.Link href="/profile">Profile</Nav.Link>
+              <Nav.Link onClick={handleClick}>
+                Logout
+              </Nav.Link> </> : <>
+              <Nav.Link href="/login">Login</Nav.Link>
+              <Nav.Link href="/register">Register</Nav.Link>
+            </>}
+
+
           </Nav>
         </Navbar.Collapse>
       </Container>
     </Navbar>
+
   );
 }
 export default HeaderComponent; 
