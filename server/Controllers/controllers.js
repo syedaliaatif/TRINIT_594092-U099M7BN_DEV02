@@ -87,9 +87,8 @@ const getSearchResult = async (req, res, next) => {
 const getUserData = async (req, res, next) => {
 
     try {
-        const numResults = Number(req.body.numResults);
-        const userEmail = req.body.userEmail;
-        console.log(userEmail);
+        const numResults = req.query.numResults || 10;
+        const userEmail = req.user.email;
         const userData = await User.aggregate([
             {
                 $match: { userEmail: userEmail }
@@ -154,6 +153,7 @@ const updateUserData = async (req, res, next) => {
 }
 
 const getWebsitesData = async (req, res, next) => {
+    const numResults = req.query.numResults || 10;
     try {
 
         const websiteData = await User.aggregate([
@@ -181,6 +181,9 @@ const getWebsitesData = async (req, res, next) => {
                 $sort: {
                     averageEmmission: 1
                 }
+            },
+            {
+                $limit: numResults
             }
         ])
         console.log(websiteData);
@@ -219,9 +222,6 @@ const queryWebsiteData = async (req, res, next) => {
             },
             {
                 $sort: { averageEmmission: 1, host: 1 }
-            },
-            {
-                $limit: 10
             }
 
         ]);
@@ -233,4 +233,13 @@ const queryWebsiteData = async (req, res, next) => {
     }
 }
 
-module.exports = { updateUserData, getWebsitesData, getUserData, getSearchResult, queryWebsiteData }; 
+const getUserInfo = async (req, res, next) => {
+    try {
+        return res.json({
+            user: req.user
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+module.exports = { updateUserData, getWebsitesData, getUserData, getSearchResult, queryWebsiteData, getUserInfo }; 

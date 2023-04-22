@@ -2,13 +2,13 @@ const Login = require("../Model/LoginModel");
 const { hashPassword, comparePasswords } = require("../utils/hashPassword");
 const generateAuthToken = require("../utils/generateAuthToken");
 
-const getUsers = async (req,res,next)=> {
-    try{
-        const loginUsers= await Login.find({}).select("-password")
-        return res.json(loginUsers)
-    } catch(err){
-        next(err)
-    }
+const getUsers = async (req, res, next) => {
+  try {
+    const loginUsers = await Login.find({}).select("-password")
+    return res.json(loginUsers)
+  } catch (err) {
+    next(err)
+  }
 }
 
 const registerUser = async (req, res, next) => {
@@ -45,7 +45,7 @@ const registerUser = async (req, res, next) => {
         .status(201)
         .json({
           success: "User created",
-          userCreated: {
+          user: {
             _id: user._id,
             email: user.email,
           },
@@ -63,7 +63,7 @@ const loginUser = async (req, res, next) => {
       return res.status(400).send("All inputs are required");
     }
 
-    const user = await Login.findOne({ email }).orFail();
+    const user = await Login.findOne({ email });
     if (user && comparePasswords(password, user.password)) {
       let cookieParams = {
         httpOnly: true,
@@ -71,9 +71,9 @@ const loginUser = async (req, res, next) => {
         sameSite: "strict",
       };
 
-      if (doNotLogout) {
-        cookieParams = { ...cookieParams, maxAge: 1000 * 60 * 60 * 24 * 7 }; // 1000=1ms
-      }
+      // if (doNotLogout) {
+      //   cookieParams = { ...cookieParams, maxAge: 1000 * 60 * 60 * 24 * 7 }; // 1000=1ms
+      // }
 
       return res
         .cookie(
@@ -87,7 +87,7 @@ const loginUser = async (req, res, next) => {
         )
         .json({
           success: "user logged in",
-          userLoggedIn: {
+          user: {
             _id: user._id,
             name: user.name,
             email: user.email,
@@ -102,5 +102,8 @@ const loginUser = async (req, res, next) => {
   }
 };
 
-module.exports= {getUsers,registerUser, loginUser};
+const logoutUser = async (req, res, next) => {
+  res.clearCookie("access_token").send("Access Token Cleared");
+}
+module.exports = { getUsers, registerUser, loginUser, logoutUser };
 
