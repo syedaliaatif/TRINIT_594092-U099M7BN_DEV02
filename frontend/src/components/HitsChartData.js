@@ -1,36 +1,22 @@
-
 //import { } from 'react-bootstrap';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Container } from 'react-bootstrap';
 import { PieChart, Pie, Tooltip, ResponsiveContainer, Cell, Sector } from 'recharts';
 
 
 
-const HitsChart = ({ query }) => {
+const HitsChartData = ({ data }) => {
 
     //const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#000000', '#00C49F'];
-    const [data, setData] = useState([]);
 
-    useEffect(() => {
-        try {
-            axios.get('/api/websites', {
-                params: query
-            }).then((response) => {
-                setData(response.data);
-            });
-
-        } catch (error) {
-            console.log(error);
-        }
-    }, []);
-
-
+    data.sort((a, b) => {
+        return a.totalHits > b.totalHits ? -1 : 1;
+    });
+    console.log(`Data in HitsChart: ${JSON.stringify(data)}`)
     let numHits = 0;
-    let res = [];
     for (let a of data) numHits += a.totalHits;
 
-    //const res = [];
+    const res = [];
 
     for (let i = 0; i < Math.min(5, data.length); i++) {
         res.push({
@@ -44,11 +30,6 @@ const HitsChart = ({ query }) => {
         name: 'Others',
         hits: numHits
     });
-
-
-    console.log(`Data in HitsChart: ${JSON.stringify(data)}`)
-    //let numHits = 0;
-
     console.log(`res is ${JSON.stringify(res)}`)
     const COLORS = ['#283739', '#2c5d63', '#263849', '#394a51', '#FFF042', '#000000'];
 
@@ -141,4 +122,4 @@ const HitsChart = ({ query }) => {
     );
 }
 
-export default HitsChart; 
+export default HitsChartData; 

@@ -6,7 +6,7 @@ const ProtectedRouteComponent = ({ user }) => {
     if (curUser) {
         return <Outlet />
     }
-    return <Navigate to="/pagenotfound" />
+    return <Navigate to="/require-login" />
 }
 
 

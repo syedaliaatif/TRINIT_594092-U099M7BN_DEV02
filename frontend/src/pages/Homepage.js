@@ -7,6 +7,14 @@ import { Transition } from 'react-transition-group';
 
 const HomePage = () => {
 
+    const hitsChartQuery = {
+        numPage: 1,
+        sort_by_hits: true
+    };
+    const tableComponentQuery = {
+        numPage: 1,
+        sort_by_emmission: true
+    };
     const duration = 500;
 
     const defaultStyle = {
@@ -24,26 +32,7 @@ const HomePage = () => {
 
     const [data, setData] = useState([]);
 
-    useEffect(() => {
 
-        (
-            async () => {
-                try {
-                    axios.get('/api/websites').then((response) => {
-                        setData(response.data);
-                        console.log(response.data);
-                    });
-                    // console.log(curData.data);
-                    // setData(curData.data);
-                } catch (error) {
-                    console.log(error);
-                }
-            }
-
-        )();
-
-
-    }, []);
 
     data.sort((a, b) => {
         if (a.averageEmmission < b.averageEmmission) return -1;
@@ -60,7 +49,7 @@ const HomePage = () => {
                             <Col md={9} className="p-3">
 
 
-                                <TableComponent data={Array.from(data)} />
+                                <TableComponent query={tableComponentQuery} />
 
                             </Col>
 
@@ -71,7 +60,7 @@ const HomePage = () => {
                             <p class="h1">Piechart showing number of hits for top websites</p>
                             <Col md={6}>
 
-                                <HitsChart data={Array.from(data)} />
+                                <HitsChart query={hitsChartQuery} />
                             </Col>
                         </Row>
                         <hr className="text-dark p-5" />

@@ -10,19 +10,15 @@ import TableComponent from "../components/TableComponent";
 
 const Dashboard = () => {
 
-    const [data, setData] = useState([]);
-
-    useEffect(() => {
-        try {
-            axios.get('/api/websites').then((response) => {
-                setData(response.data);
-            });
-        }
-        catch (error) {
-            console.log(error);
-
-        }
-    }, []);
+    //const userEmail = userService.getCurrentUser();
+    const hitsChartQuery = {
+        numPage: 1,
+        sort_by_hits: true
+    };
+    const tableComponentQuery = {
+        numPage: 1,
+        sort_by_emmission: true
+    };
 
 
     return (
@@ -33,9 +29,9 @@ const Dashboard = () => {
                 </Col>
                 <Col md={8} className="p-5">
 
-                    <Row><Col><p className="h1">Most Visited Websites</p><HitsChart data={Array.from(data)} /></Col></Row>
+                    <Row><Col><p className="h1">Most Visited Websites</p><HitsChart query={hitsChartQuery} /></Col></Row>
                     <hr className="p-5" />
-                    <Row><Col><p className="h1">Websites With Least Carbon Emmission</p><TableComponent data={Array.from(data)}></TableComponent></Col></Row>
+                    <Row><Col><p className="h1">Websites With Least Carbon Emmission</p><TableComponent query={tableComponentQuery}></TableComponent></Col></Row>
                     <hr className="p-5 fs-1" />
 
                 </Col>

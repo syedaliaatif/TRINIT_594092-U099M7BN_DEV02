@@ -1,31 +1,13 @@
-import axios from "axios";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { Card, Table } from "react-bootstrap";
 import { TransitionGroup, Transition } from "react-transition-group"
-const TableComponent = ({ query }) => {
+const TableComponentData = ({ data }) => {
 
-    const [data, setData] = useState([]);
-
-
+    console.log(`Data : ${JSON.stringify(data)}`)
 
     const Round = (n) => {
         return Math.round(n * 100) / 100;
     }
-
-    useEffect(() => {
-        try {
-            axios.get('/api/websites', {
-                params: query
-
-            }).then((response) => {
-                setData(response.data);
-                console.log(data);
-            })
-        }
-        catch (error) {
-            console.log(error);
-        }
-    }, []);
 
     return (
 
@@ -83,4 +65,4 @@ const TableComponent = ({ query }) => {
 
 }
 
-export default TableComponent; 
+export default TableComponentData; 

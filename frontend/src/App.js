@@ -18,6 +18,7 @@ import UserDashboardPage from "./pages/UserDashboardPage";
 import UserSearchPage from "./pages/UserSearchPage";
 import ProtectedRouteComponent from "./components/ProtectedRouteComponents";
 import NotFoundPage from "./pages/NotFoundPage";
+import LoginRequiredPage from "./pages/LoginRequiredPage";
 
 
 
@@ -50,6 +51,9 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/timeline" element={<Timeline />} />
         <Route path="/pagenotfound" element={<NotFoundPage />} />
+        <Route path="/require-login" element={<LoginRequiredPage />} />
+
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <FooterComponent />
     </BrowserRouter>

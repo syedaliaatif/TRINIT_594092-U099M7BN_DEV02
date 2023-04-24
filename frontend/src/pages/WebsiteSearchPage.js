@@ -6,6 +6,8 @@ import HitsChart from "../components/HitsChart";
 import SearchBar from "../components/SearchBar";
 import Sidebar from "../components/Sidebar";
 import TableComponent from "../components/TableComponent";
+import TableComponentData from "../components/tableComponentData";
+import HitsChartData from "../components/HitsChartData";
 
 const WebsiteSearchPage = () => {
 
@@ -66,12 +68,12 @@ const WebsiteSearchPage = () => {
                                 state => (<div ref={nodeRef} style={{ ...defaultStyle, ...transitionStyles[state] }}>
                                     <Row>
                                         <Col>
-                                            <TableComponent data={Array.from(data)} />
+                                            <TableComponentData data={Array.from(data)} />
                                         </Col>
                                     </Row>
                                     <Row>
                                         <Col>
-                                            <HitsChart data={Array.from(data)} />
+                                            <HitsChartData data={Array.from(data)} />
                                         </Col>
                                     </Row>
                                 </div>

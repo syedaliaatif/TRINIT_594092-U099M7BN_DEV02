@@ -25,7 +25,7 @@ const HeaderComponent = ({ user, setUser }) => {
           <Nav className="me-auto">
             <Nav.Link href="/website/dashboard">Website</Nav.Link>
             <Nav.Link href="/user/dashboard">User</Nav.Link>
-
+            <Nav.Link href="/search">Google Search</Nav.Link>
           </Nav>
           <Nav>
             {user ? <>
