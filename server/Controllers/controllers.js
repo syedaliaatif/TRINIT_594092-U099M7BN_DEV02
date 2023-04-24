@@ -153,10 +153,31 @@ const updateUserData = async (req, res, next) => {
 }
 
 const getWebsitesData = async (req, res, next) => {
-    const numResults = req.query.numResults || 10;
+    const numResults = 10;
+    const numPage = req.query.numPage || 1;
+    const skipResult = (numPage - 1) * numResults;
+    console.log(req.query);
+    console.log(decodeURI(req.query))
+    console.log(decodeURIComponent(req.query.email));
+    let sorting_rule = {};
+    if (req.query.sort_by_emmission) {
+        sorting_rule = { averageEmmission: 1 }
+    }
+    if (req.query.sort_by_hits) {
+        sorting_rule = { totalHits: -1 }
+    }
+    var curUser = ``;
+
+    if (req.query.email) {
+
+        curUser = "^" + decodeURIComponent(req.query.email) + "$";
+    }
     try {
 
         const websiteData = await User.aggregate([
+            {
+                $match: { userEmail: new RegExp(curUser) }
+            },
             {
                 $sort: { host: 1 }
             },
@@ -178,9 +199,11 @@ const getWebsitesData = async (req, res, next) => {
                 }
             },
             {
-                $sort: {
-                    averageEmmission: 1
-                }
+                $sort: sorting_rule
+            },
+            {
+                $skip: skipResult
+
             },
             {
                 $limit: numResults
@@ -200,9 +223,14 @@ const queryWebsiteData = async (req, res, next) => {
 
     try {
         const host = req.body.host;
+        let curUser = '';
+        if (req.body.email) {
+            curUser = `^${req.body.email}` + "$";
+        }
+
         const result = await User.aggregate([
             {
-                $match: { host: new RegExp(`.*${host}.*`) }
+                $match: { host: new RegExp(`.*${host}.*`), userEmail: new RegExp(curUser) }
             },
             {
                 $group: {

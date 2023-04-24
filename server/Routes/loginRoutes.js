@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express()
 const { verifyIsLoggedIn } = require("../middleware/verifyAuthToken");
-const { getUsers, registerUser, loginUser, logoutUser } = require("../controllers/loginController");
+const { getUsers, registerUser, loginUser, logoutUser } = require("../Controllers/loginController");
 const { getUserInfo } = require('../Controllers/controllers');
 
 //user logged in routes
