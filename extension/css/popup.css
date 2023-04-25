@@ -23,7 +23,7 @@
     box-shadow: 3px 1px 10px rgba(0, 0, 0, 0.2) !important;
     
   }
-  .aatif-chrome-extension .navbar ul {
+  .aatif-chrome-extension .aatif-navbar .aatif-navbar-ul {
 
     width: 100%;
     list-style-type: none !important;
@@ -35,7 +35,7 @@
     line-height: 4em !important;
   }
   
-  .aatif-chrome-extension .navbar li {
+  .aatif-chrome-extension .aatif-navbar .aatif-navbrand {
     float: left !important;
     font-size: 2em !important;
     text-shadow: 0.5px -0.5px 0.15px #fff !important;
@@ -48,7 +48,7 @@
   }
   /* Change the link color to #111 (black) on hover */
   
-  .aatif-chrome-extension button {
+  .aatif-chrome-extension .aatif-close-btn {
     display: inline;
     position: relative !important;
     cursor: pointer !important;
@@ -79,7 +79,7 @@
     background-color: #dc3545 !important;
     border: solid #dc3545 !important;
   }
-  .aatif-chrome-extension .card {
+  .aatif-chrome-extension .aatif-card {
     position: relative;
     min-height: 250px !important;
     width: 230px !important;
@@ -91,11 +91,11 @@
     padding-bottom:10px !important; 
   }
   
-  .aatif-chrome-extension .card:hover {
+  .aatif-chrome-extension .aatif-card:hover {
     cursor: pointer !important;
     box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.8) !important;
   }
-  .aatif-chrome-extension .card-header {
+  .aatif-chrome-extension .aatif-card-header {
     text-align: center !important;
     line-height: 2em !important;
     font-size: 1.5em !important;
@@ -106,7 +106,7 @@
     word-wrap: break-word !important;
     overflow: auto !important;
   }
-  .aatif-chrome-extension .card-body ul {
+  .aatif-chrome-extension .aatif-card-body ul {
     list-style-type: none !important;
     background-color: white !important;
     margin: 0 !important;
