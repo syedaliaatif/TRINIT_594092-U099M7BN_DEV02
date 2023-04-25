@@ -7,7 +7,7 @@ const getSearchResult = async (req, res, next) => {
         const apiURL = process.env.GOOGLE_SEARCH_API_URL;
         const apiKey = process.env.GOOGLE_SEARCH_API_KEY;
         const apiCx = process.env.GOOGLE_SEARCH_API_CX;
-        const searchedWord = req.body.searchedWord.replaceAll(' ', '+');
+        const searchedWord = req.body.searchedWord.replace(/ /g, '+');
         console.log(`Searched Word: ${searchedWord}`)
         const queryObject = {
             key: apiKey,
