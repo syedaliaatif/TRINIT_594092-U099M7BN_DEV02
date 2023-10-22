@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import { PieChart, Pie, Tooltip, ResponsiveContainer, Cell, Sector } from 'recharts';
+import Dashboard from "../pages/Dashboard";
 
 
 
@@ -11,20 +12,34 @@ const HitsChart = ({ query }) => {
 
     //const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#000000', '#00C49F'];
     const [data, setData] = useState([]);
+    const [calculatedData, setCalculatedData] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         try {
+            console.log(`Response trying`);
             axios.get('/api/websites', {
                 params: query
             }).then((response) => {
+                console.log(`Response calculated: ${JSON.stringify(response.data)}`);
                 setData(response.data);
+                setLoading(false);
             });
 
         } catch (error) {
             console.log(error);
+            setLoading(false);
         }
-    }, []);
+    }, [query]);
 
+
+    useEffect(() => {
+    if (loading) {
+        console.log("loading");
+    }
+});
+  useEffect(() => {
+    if (data.length > 0) {
 
     let numHits = 0;
     let res = [];
@@ -44,12 +59,18 @@ const HitsChart = ({ query }) => {
         name: 'Others',
         hits: numHits
     });
-
-
     console.log(`Data in HitsChart: ${JSON.stringify(data)}`)
     //let numHits = 0;
 
     console.log(`res is ${JSON.stringify(res)}`)
+    setCalculatedData(res);
+    
+    }
+    }, [data]);
+
+
+ 
+    
     const COLORS = ['#283739', '#2c5d63', '#263849', '#394a51', '#FFF042', '#000000'];
 
     const RADIAN = Math.PI / 180;
@@ -113,13 +134,13 @@ const HitsChart = ({ query }) => {
         );
     };
 
-
+ 
 
     return (
         <Container className='d-flex justify-content-center' fluid>
             <PieChart width={500} height={500}>
                 <Pie
-                    data={res}
+                    data={calculatedData}
                     activeIndex={activeIndex}
                     activeShape={renderActiveShape}
                     cx="50%"
@@ -132,13 +153,14 @@ const HitsChart = ({ query }) => {
                     dataKey="hits"
                     onMouseEnter={onPieEnter}
                 >
-                    {res.map((entry, index) => (
+                    {calculatedData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                 </Pie>
             </PieChart>
         </Container>
     );
+    
 }
 
 export default HitsChart; 

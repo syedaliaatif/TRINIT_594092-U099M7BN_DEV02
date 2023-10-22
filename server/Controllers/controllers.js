@@ -209,7 +209,7 @@ const getWebsitesData = async (req, res, next) => {
                 $limit: numResults
             }
         ])
-        console.log(websiteData);
+        // console.log(websiteData);
         console.log(websiteData[0].totalEmmission);
         res.status(200).json(websiteData);
 

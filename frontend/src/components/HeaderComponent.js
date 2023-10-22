@@ -29,7 +29,7 @@ const HeaderComponent = ({ user, setUser }) => {
           </Nav>
           <Nav>
             {user ? <>
-              <Nav.Link href="/profile">Profile</Nav.Link>
+              <Nav.Link href="/profile">Hi, {user.name}</Nav.Link>
               <Nav.Link onClick={handleClick}>
                 Logout
               </Nav.Link> </> : <>

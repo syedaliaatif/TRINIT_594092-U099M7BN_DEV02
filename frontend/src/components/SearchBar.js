@@ -14,7 +14,7 @@ const SearchBar = ({ doOnSubmit }) => {
                     aria-describedby="inputGroup-sizing-sm"
                     placeholder="Type website you want to search"
                     name="searchWebsite"
-                    autoComplete="off"
+                    autoComplete="on"
 
                 />
                 <Button variant="warning" type="submit">Search</Button>

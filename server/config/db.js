@@ -5,6 +5,7 @@ const uri = process.env.MONGODB_URI;
 const connectDb = () => {
 
     try {
+        mongoose.set('strictQuery', true);
         mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 

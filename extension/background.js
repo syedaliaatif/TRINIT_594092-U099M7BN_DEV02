@@ -40,7 +40,7 @@ async function updateHostData(url, curData) {
 
 async function sendPostRequest(emmission, url, email, numRetries) {
     try {
-        const res = await fetch('http://localhost:3001/api', {
+        const res = await fetch('http://localhost:3004/api', {
             method: 'POST',
             body: JSON.stringify({
                 emmission: emmission,

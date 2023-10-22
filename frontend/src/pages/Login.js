@@ -42,6 +42,7 @@ function Login() {
         else {
 
           alert('Wrong Credentials');
+          console.log(user);
           navigate('/login');
 
         }
@@ -82,7 +83,7 @@ function Login() {
 
             <Form.Check label='Do not logout' type='checkbox' className='mb-3' name='doNotLogOut' onChange={formik.handleChange} value={formik.values.doNotLogOut} />
 
-            <Button size='lg' variant='dark' type='submit'>Register</Button>
+            <Button size='lg' variant='dark' type='submit'>Login</Button>
 
 
           </Form>

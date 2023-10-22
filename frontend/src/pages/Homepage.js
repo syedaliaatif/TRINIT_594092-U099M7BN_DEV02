@@ -2,19 +2,22 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Col, Container, Row, Table } from "react-bootstrap";
 import TableComponent from "../components/TableComponent";
+import TableComponentShimmer from "../components/TableComponentShimmer";
 import HitsChart from "../components/HitsChart";
 import { Transition } from 'react-transition-group';
 
 const HomePage = () => {
 
-    const hitsChartQuery = {
-        numPage: 1,
-        sort_by_hits: true
-    };
+    
     const tableComponentQuery = {
         numPage: 1,
         sort_by_emmission: true
     };
+    const hitsChartQuery = {
+        numPage: 1,
+        sort_by_hits: true
+    };
+ 
     const duration = 500;
 
     const defaultStyle = {
@@ -26,18 +29,16 @@ const HomePage = () => {
         entering: { opacity: 0 },
         entered: { opacity: 1 },
         exiting: { opacity: 1 },
-        exited: { opacity: 0 },
+        exited: { opacity: 0 },     
     };
     const nodeRef = useRef(null);
 
     const [data, setData] = useState([]);
 
-
-
-    data.sort((a, b) => {
-        if (a.averageEmmission < b.averageEmmission) return -1;
-        else return 1;
-    })
+    // data.sort((a, b) => {
+    //     if (a.averageEmmission < b.averageEmmission) return -1;
+    //     else return 1;
+    // })
     return (
         <Transition nodeRef={nodeRef} in={true} appear={true} timeout={duration}>
             {
@@ -47,7 +48,7 @@ const HomePage = () => {
 
                             <p class="h1 mt-5">Websites with least carbon emmission</p>
                             <Col md={9} className="p-3">
-
+                                
 
                                 <TableComponent query={tableComponentQuery} />
 

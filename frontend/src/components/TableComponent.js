@@ -2,9 +2,12 @@ import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { Card, Table } from "react-bootstrap";
 import { TransitionGroup, Transition } from "react-transition-group"
+import TableComponentShimmer from "./TableComponentShimmer";
 const TableComponent = ({ query }) => {
 
     const [data, setData] = useState([]);
+    const [calculatedData, setCalculatedData] = useState([]);
+    const [loading, setLoading] = useState(true);
 
 
 
@@ -13,23 +16,36 @@ const TableComponent = ({ query }) => {
     }
 
     useEffect(() => {
-        try {
-            axios.get('/api/websites', {
-                params: query
 
-            }).then((response) => {
-                setData(response.data);
-                console.log(data);
-            })
-        }
-        catch (error) {
-            console.log(error);
-        }
+        setTimeout(()=>{
+
+            try {
+
+                console.log("loading");
+                axios.get('/api/websites', {
+                    params: query
+    
+                }).then((response) => {
+                    setData(response.data);
+                    setLoading(false);
+                    console.log(`This is table data: ${JSON.stringify(response.data)}`);
+                })
+            }
+            catch (error) {
+                console.log(error);
+            }
+
+        },2000 )
+       
     }, []);
 
+    if(loading){
+        console.log("shimmering effect");
+        return  <TableComponentShimmer/>
+        
+    }
+
     return (
-
-
         <Card className="my-5 p-0" style={{ background: "#283739" }} >
 
             <Card.Body>

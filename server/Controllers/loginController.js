@@ -10,7 +10,6 @@ const getUsers = async (req, res, next) => {
     next(err)
   }
 }
-
 const registerUser = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
@@ -20,6 +19,7 @@ const registerUser = async (req, res, next) => {
 
     const userExists = await Login.findOne({ email });
     if (userExists) {
+      console.log("user exists");
       return res.status(400).send("user exists");
     } else {
       const hashedPassword = hashPassword(password);
@@ -95,6 +95,7 @@ const loginUser = async (req, res, next) => {
           },
         });
     } else {
+      console.log("not working");
       return res.status(401).send("wrong credentials");
     }
   } catch (err) {

@@ -76,7 +76,7 @@ function doAtInjection(data) {
     </div>
     <div class="aatif-card ${cardBackground}">
       <div class="aatif-card-header">
-        www.google.com
+        ${host}
       </div>
       <div class="aatif-card-body">
         <ul>
