@@ -17,7 +17,7 @@ const TableComponent = ({ query }) => {
 
     useEffect(() => {
 
-        setTimeout(()=>{
+   
 
             try {
 
@@ -35,7 +35,7 @@ const TableComponent = ({ query }) => {
                 console.log(error);
             }
 
-        },2000 )
+       
        
     }, []);
 
