@@ -16,7 +16,7 @@ const TableComponent = ({ query }) => {
     }
 
     useEffect(() => {
-
+        console.log("setting timeout");
         setTimeout(()=>{
 
             try {
